@@ -148,7 +148,7 @@ video {
 
 .volume-bar {
   background: var(--font-color);
-  width: 100%;
+  width: 20%;
   height: 100%;
   border-radius: 10px;
   transition: width 0.2s ease-in;
