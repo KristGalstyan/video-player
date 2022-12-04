@@ -1,4 +1,5 @@
 const video = document.querySelector('video'),
+      player = document.querySelector('.player'),
       progressRange = document.querySelector('.progress-range'),
       progressBar = document.querySelector('.progress-bar'),
       playBtn = document.querySelector('#play-btn'),
@@ -7,7 +8,8 @@ const video = document.querySelector('video'),
       volumeBar = document.querySelector('.volume-bar'),
       currentTime = document.querySelector('.time-elapsed'),
       durration = document.querySelector('.time-duration'),
-      fullscreen = document.querySelector('.fullscreen');
+      fullscreenBtn = document.querySelector('.fullscreen'),
+      speed = document.querySelector('.player-speed');
 
 // Play & Pause ----------------------------------- //
 
@@ -56,6 +58,8 @@ function setProgress(e) {
 
 // Volume Controls --------------------------- //
 
+let lastVolume = 1;
+
 // Volume Bar
 function chnageVolume(e) {
     let volume = e.offsetX / volumeRange.offsetWidth;
@@ -77,14 +81,68 @@ function chnageVolume(e) {
     } else if (volume === 0) {
         volumeIcon.classList.add('fas', 'fa-volume-off');
     }
+    lastVolume = volume;
+}
+
+// Mute/Unmute
+function toggleMute() {
+    volumeIcon.className = '';
+    if (video.volume) {
+        lastVolume = video.volume;
+        video.volume = 0;
+        volumeBar.style.width = 0;
+        volumeIcon.classList.add('fas', 'fa-volume-mute');
+        volumeIcon.setAttribute('title', 'Unmute');
+    } else {
+        video.volume = lastVolume;
+        volumeBar.style.width = `${lastVolume * 100}%`;
+        volumeIcon.classList.add('fas', 'fa-volume-up');
+        volumeIcon.setAttribute('title', 'Mute');
+    }
 }
 
 // Change Playback Speed -------------------- //
 
-
+function changeSpeed() {
+    video.playbackRate = speed.value;
+}
 
 // Fullscreen ------------------------------- //
 
+function openFullscreen(elem) {
+    if (elem.requestFullscreen) {
+      elem.requestFullscreen();
+    } else if (elem.webkitRequestFullscreen) { /* Safari */
+      elem.webkitRequestFullscreen();
+    } else if (elem.msRequestFullscreen) { /* IE11 */
+      elem.msRequestFullscreen();
+    }
+    video.classList.add('video-fullscreen');
+  }
+  
+  /* Close fullscreen */
+  function closeFullscreen() {
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) { /* Safari */
+      document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) { /* IE11 */
+      document.msExitFullscreen();
+    }
+    video.classList.remove('video-fullscreen');
+  }
+
+let fullscreen = false;
+
+// TOggle Fullscreen
+function toggleFullscreen() {
+    if (!fullscreen) {
+        openFullscreen(player);
+    } else {
+        closeFullscreen();
+    }
+    fullscreen = !fullscreen;
+}
 
 // EventListener
 playBtn.addEventListener('click', togglePlay);
@@ -93,3 +151,6 @@ video.addEventListener('timeupdate', upDateProgress);
 video.addEventListener('canplay', upDateProgress);
 progressRange.addEventListener('click', setProgress);
 volumeRange.addEventListener('click', chnageVolume);
+volumeIcon.addEventListener('click', toggleMute);
+speed.addEventListener('change', changeSpeed);
+fullscreenBtn.addEventListener('click', toggleFullscreen);
