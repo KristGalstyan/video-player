@@ -136,21 +136,22 @@ let fullscreen = false;
 
 // TOggle Fullscreen
 function toggleFullscreen() {
-    if (!fullscreen) {
-        openFullscreen(player);
-    } else {
-        closeFullscreen();
-    }
+    !fullscreen ? openFullscreen(player) : closeFullscreen(); 
     fullscreen = !fullscreen;
 }
 
 // EventListener
-playBtn.addEventListener('click', togglePlay);
-video.addEventListener('click', togglePlay);
-video.addEventListener('timeupdate', upDateProgress);
-video.addEventListener('canplay', upDateProgress);
-progressRange.addEventListener('click', setProgress);
-volumeRange.addEventListener('click', chnageVolume);
-volumeIcon.addEventListener('click', toggleMute);
-speed.addEventListener('change', changeSpeed);
-fullscreenBtn.addEventListener('click', toggleFullscreen);
+function target(elem, event, fun) {
+    elem.addEventListener(event, fun);
+}
+
+target(playBtn, 'click', togglePlay);
+target(video, 'click', togglePlay);
+target(video, 'ended', showPlayIcon);
+target(video, 'timeupdate', upDateProgress);
+target(video, 'canplay', upDateProgress);
+target(progressRange, 'click', setProgress);
+target(volumeRange, 'click', chnageVolume);
+target(volumeIcon, 'click', toggleMute);
+target(speed, 'change', changeSpeed);
+target(fullscreenBtn, 'click', toggleFullscreen);
